@@ -15,10 +15,10 @@ class CreateWinnersTable extends Migration
     {
         Schema::create('winners', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('sender_number','11')->unique();
+            $table->string('sender_number','11');
             $table->timestamp('created_at');
             $table->unsignedBigInteger('voucher_id');
-            $table->foreign('voucher_id')->references('id')->on('codes');
+            $table->foreign('code_id')->references('id')->on('codes');
         });
     }
 

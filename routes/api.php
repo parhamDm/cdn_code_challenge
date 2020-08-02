@@ -23,3 +23,6 @@ Route::prefix('codes')->group(function (){
 Route::prefix('report')->group(function (){
     Route::get('iswinner','ReportController@isWinner');
 });
+Route::prefix('sms')->group(function (){
+    Route::post('receive','SmsController@receive');
+});

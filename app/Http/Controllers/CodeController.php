@@ -34,6 +34,7 @@ class CodeController extends Controller
             $valid = Code::where('value',$code->value)->first();
         }while($valid);
         $code->request_limit = $request->request_limit;
+
         //save db
         $code->save();
         //return result
@@ -42,6 +43,4 @@ class CodeController extends Controller
         $response->status_code = "0";
         return new Response($response);
     }
-
-
 }
