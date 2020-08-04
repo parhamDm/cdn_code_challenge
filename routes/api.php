@@ -20,7 +20,7 @@ Route::ApiResource('codes', 'CodeController')->only([
     'index', 'show','store','destroy'
 ]);
 Route::ApiResource('codes.winners', 'WinnerController')->only([
-    'index', 'show','store'
+    'index'
 ]);
 Route::prefix('report')->group(function (){
     Route::get('is_winner','ReportController@is_winner');

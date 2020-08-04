@@ -13,7 +13,7 @@ class WinnerController extends Controller
     public function index(Request $request){
         //handle page size
         $max_page_size =env('MAX_PAGE_SIZE','1000');
-        if($request->limit&&$request->limit<$max_page_size){
+        if($request->limit&&$request->limit<$max_page_size&&$request->limit>0){
             $max_page_size = $request->limit;
         }
         //check verbose

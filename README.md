@@ -30,12 +30,12 @@ application; then run these following commands:
 composer install
 php artisan migrate
 ```
-this commands install required packages and the create database tables. the you can use following command to deploy 
-laravel using php built in webserver
+this commands install required packages and the create database tables. then you can use following command to deploy 
+laravel using php built-in webserver
 ```
 php artisan serve
 ```
-Finally, in order to enables sms listener queue use following command
+Finally, in order to enable sms listener queue, use following command
 ```
 php artisan queue:listen
 ```
@@ -58,8 +58,8 @@ to see list of codes you must use following request:
 ```$xslt
 GET /api/codes?limit=10
 ```
-variable limit is optional to specify page size, this variable is 100 by default in .env file. response contains following fields
-- status_code and status_msg: same as before
+variable "limit" is optional to specify page size, this variable is 100 by default in .env file(MAX_PAGE_SIZE). response contains following fields
+- status_code and status_msg: same as above
 - data: list of codes
 - links: links for next page and prev page
 - meta: details of pagination. like page size, etc
@@ -99,7 +99,7 @@ in order to see list of winners, use following request
 ```
 GET /api/codes/{id}/winners?limit=10&verbose=true
 ```
-verbose is an optional value. if set you can see exact date of request. response is same as getting list of codes.
+verbose is an optional variable. if set, you can see exact date of request. response is same as getting list of codes.
 ### report
 use following request to determine one has won or not:
 ```
