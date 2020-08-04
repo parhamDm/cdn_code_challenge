@@ -16,9 +16,10 @@ class CreateWinnersTable extends Migration
         Schema::create('winners', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('sender_number','11');
-            $table->timestamp('created_at');
-            $table->unsignedBigInteger('voucher_id');
-            $table->foreign('code_id')->references('id')->on('codes');
+            $table->timestamp('date','4');
+            $table->unsignedBigInteger('code_id');
+            $table->foreign('code_id')
+                ->references('id')->on('codes')->onDelete('cascade');
         });
     }
 

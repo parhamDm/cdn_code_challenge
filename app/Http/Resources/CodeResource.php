@@ -4,11 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-/**
- * @property mixed status_code
- * @property mixed status_msg
- */
-class Response extends JsonResource
+class CodeResource extends ResponseResource
 {
     /**
      * Transform the resource into an array.
@@ -16,11 +12,10 @@ class Response extends JsonResource
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
+
+
     public function toArray($request)
     {
-        return [
-            'status_code' => $this->status_code,
-            'status_msg' => $this->status_msg,
-        ];
+        return parent::toArray($request);
     }
 }

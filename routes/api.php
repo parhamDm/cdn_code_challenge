@@ -16,12 +16,14 @@ use Illuminate\Support\Facades\Route;
 //Route::middleware('auth:api')->get('/user', function (Request $request) {
 //    return $request->user();
 //});
-Route::prefix('codes')->group(function (){
-    Route::post('','CodeController@create');
-    Route::get('','CodeController@index');
-});
+Route::ApiResource('codes', 'CodeController')->only([
+    'index', 'show','store','destroy'
+]);
+Route::ApiResource('codes.winners', 'WinnerController')->only([
+    'index', 'show','store'
+]);
 Route::prefix('report')->group(function (){
-    Route::get('iswinner','ReportController@isWinner');
+    Route::get('is_winner','ReportController@is_winner');
 });
 Route::prefix('sms')->group(function (){
     Route::post('receive','SmsController@receive');

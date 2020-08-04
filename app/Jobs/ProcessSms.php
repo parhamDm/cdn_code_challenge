@@ -76,7 +76,7 @@ class ProcessSms implements ShouldQueue
             $winner = new Winner();
             $winner->sender_number = $this->sender_number;
             $winner->code_id = $code->id;
-            $winner->created_at = $this->time;
+            $winner->date = $this->time->format('Y-m-d H:i:s.v');
             //commit changes and winner
             DB::transaction(function () use ($winner, $code) {
                 $code->save();

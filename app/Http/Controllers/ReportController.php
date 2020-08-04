@@ -3,13 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Code;
+use App\Http\Resources\CodeResource;
 use App\Http\Resources\Response;
+use App\Http\Resources\ResponseResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class ReportController extends Controller
 {
-    public function isWinner(Request $request){
+    public function is_winner(Request $request){
         //validation steps
         $response = new \stdClass();
 
@@ -18,20 +20,21 @@ class ReportController extends Controller
             'code' => 'required',
         ]);
         if ($validation->fails()) {
-            $response->status_code = "-1";
-            $response->status_msg = $validation->messages();
-            return new Response($response);
+            return new ResponseResource($validation->messages(),"-4","Invalid Input");
+
         }
-        //
-        $winner = Code::where('value',$request->code)->first()->winners()->where('sender_number',$request->number)->first();
+        $winner=null;
+        //database request
+        try {
+            $winner  = Code::where('value',$request->code)->first()->winners()->where('sender_number',$request->number)->first();
+        }catch (\Throwable $ex){
+            $response=new CodeResource([],"-2","Code Not found");
+            return response()->json(($response), 404);        }
         if ($winner!=null){
-            $response->status_code = "0";
-            $response->status_msg = "IS_WINNER";
+            return new ResponseResource([],"0","Winner");
         }else{
-            $response->status_code = "1";
-            $response->status_msg = "NOT WINNER";
+            return new ResponseResource([],"1","Not Winner");
         }
-        return new Response($response);
 
     }
 }

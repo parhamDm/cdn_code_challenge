@@ -3,29 +3,49 @@
 namespace App\Http\Controllers;
 
 use App\Code;
+use App\Http\Resources\CodeResource;
 use App\Http\Resources\CodesCollection;
 use App\Http\Resources\Response;
+use App\Http\Resources\ResponseCollection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use stdClass;
 
 class CodeController extends Controller
 {
-    public function index(){
-        return new CodesCollection(Code::paginate(10));
+    public function index(Request $request){
+        $max_page_size =env('MAX_PAGE_SIZE','1000');
+        if($request->limit&&$request->limit<$max_page_size){
+            $max_page_size = $request->limit;
+        }
+        $codes = Code::paginate($max_page_size);
+        $codes->appends(request()->query());
+        return new CodesCollection($codes,"0","SUCCESS");
+    }
+
+    public function show(Request $request){
+        //validate
+        if(!$request->code||!is_numeric($request->code)){
+            return new CodeResource([],"-2","Invalid id");
+        }
+        //
+        $code_details=Code::find($request->code);
+        if (!$code_details){
+                $response=new CodeResource([],"-3","Not found");
+            return response()->json(($response), 404);
+        }
+        return new CodeResource($code_details,"0","SUCCESS");
     }
 
 
-    public function create(Request $request){
+    public function store(Request $request){
         //validation step
         $validation = Validator::make($request->all(),[
-            'request_limit' => 'required',
+            'request_limit' => 'required|numeric|max:1000000',
         ]);
         if ($validation->fails()) {
-            $response = new stdClass();
-            $response->status_code = "1";
-            $response->status_msg = $validation->messages();
-            return new Response($response);
+
+            return new CodeResource($validation->messages(),"-4","Invalid Input");
         }
         //generate code
         $code  =new Code();
@@ -38,9 +58,12 @@ class CodeController extends Controller
         //save db
         $code->save();
         //return result
-        $response = new stdClass();
-        $response->status_msg = "SUCCESS";
-        $response->status_code = "0";
-        return new Response($response);
+
+        return new CodeResource($code,"0","Success");
+    }
+
+    public function destroy($id){
+        Code::destroy($id);
+        return new CodeResource([],"0","Success");
     }
 }

@@ -21,58 +21,90 @@ Laravel is a web application framework with expressive, elegant syntax. We belie
 
 Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-## Learning Laravel
+## Deploy
+in order to deploy laravel application you must have composer and php>=7.2 installed on your computer.
+then configure mysql database and redis database in .env located in root of the 
+application; then run these following commands:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+```
+composer install
+php artisan migrate
+```
+this commands install required packages and the create database tables. the you can use following command to deploy 
+laravel using php built in webserver
+```
+php artisan serve
+```
+Finally, in order to enables sms listener queue use following command
+```
+php artisan queue:listen
+```
+## how to use
+### code operations
+to create a new code use following request:
+```
+POST /api/codes
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+{
+    "request_limit" : "100"
+}
+```
+response contains following fields
+- status_code: status code of processing request. 0 status for Success, -4 is invalid input.
+- status_msg: message for status code.
+- data: if request is SUCCESS, model created sill be returned. else error messages.
 
-## Laravel Sponsors
+to see list of codes you must use following request:
+```$xslt
+GET /api/codes?limit=10
+```
+variable limit is optional to specify page size, this variable is 100 by default in .env file. response contains following fields
+- status_code and status_msg: same as before
+- data: list of codes
+- links: links for next page and prev page
+- meta: details of pagination. like page size, etc
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[British Software Development](https://www.britishsoftware.co)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- [UserInsights](https://userinsights.com)
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-- [User10](https://user10.com)
-- [Soumettre.fr](https://soumettre.fr/)
-- [CodeBrisk](https://codebrisk.com)
-- [1Forge](https://1forge.com)
-- [TECPRESSO](https://tecpresso.co.jp/)
-- [Runtime Converter](http://runtimeconverter.com/)
-- [WebL'Agence](https://weblagence.com/)
-- [Invoice Ninja](https://www.invoiceninja.com)
-- [iMi digital](https://www.imi-digital.de/)
-- [Earthlink](https://www.earthlink.ro/)
-- [Steadfast Collective](https://steadfastcollective.com/)
-- [We Are The Robots Inc.](https://watr.mx/)
-- [Understand.io](https://www.understand.io/)
-- [Abdel Elrafa](https://abdelelrafa.com)
-- [Hyper Host](https://hyper.host)
-- [Appoly](https://www.appoly.co.uk)
-- [OP.GG](https://op.gg)
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+sample response:
+```json
+{
+  "data": [
+    {
+      "id": 4,
+      "value": "61a5b1",
+      "created_at": "2020-08-04 19:56:14",
+      "request_limit": 123,
+      "request_number": 0
+    }
+  ],
+  "links": {
+    "first": "http://localhost:8000/api/codes?page=1",
+    "last": "http://localhost:8000/api/codes?page=1",
+    "prev": null,
+    "next": null
+  },
+  "meta": {
+    "current_page": 1,
+    "from": 1,
+    "last_page": 1,
+    "path": "http://localhost:8000/api/codes",
+    "per_page": "1000",
+    "to": 1,
+    "total": 1
+  },
+  "status_code": "0",
+  "status_msg": "SUCCESS"
+}
+```
+in order to see list of winners, use following request
+```
+GET /api/codes/{id}/winners?limit=10&verbose=true
+```
+verbose is an optional value. if set you can see exact date of request. response is same as getting list of codes.
+### report
+use following request to determine one has won or not:
+```
+GET /api/report/is_winner?number=09195250425&code=61a5b1
+```
+response contains following fields:
+- status_code: 0 is winner and 1 is not winner. -2 for code not found
+- status_msg: message for status code.

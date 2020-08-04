@@ -2,9 +2,10 @@
 
 namespace App\Http\Resources;
 
+use Illuminate\Http\Resources\Json\Resource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class CodesCollection extends ResourceCollection
+class CodesCollection extends ResponseCollection
 {
     /**
      * Transform the resource collection into an array.
@@ -16,4 +17,5 @@ class CodesCollection extends ResourceCollection
     {
         return parent::toArray($request);
     }
+
 }
