@@ -23,7 +23,7 @@ Route::ApiResource('codes.winners', 'WinnerController')->only([
     'index'
 ]);
 Route::prefix('report')->group(function (){
-    Route::get('is_winner','ReportController@is_winner');
+    Route::get('is-winner','ReportController@is_winner');
 });
 Route::prefix('sms')->group(function (){
     Route::post('receive','SmsController@receive');
